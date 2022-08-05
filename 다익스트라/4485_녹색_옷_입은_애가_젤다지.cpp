@@ -10,8 +10,8 @@ using namespace std;
 #define X first
 #define Y second
 
-map<pair<int, int>, int> node;	// 정점 / 비용
-map<pair<int, int>, int> d;		// 정점 / 고정비용 (최소비용)
+map<pair<int, int>, int> node;
+map<pair<int, int>, int> d;
 
 const int INF = 125 * 125 * 9 + 1;
 
@@ -21,7 +21,6 @@ int main()
 	cin.tie(0); cout.tie(0);
 
 	priority_queue<tuple<int,int, int>, vector<tuple<int,int, int>>, greater<tuple<int,int,int>>> pq;
-	// 우선 순위큐 삽입 원소 : (현재 비용, x, y)
 	vector<int> ans;
 
 	int dx[4] = { 1,0,-1,0 };
