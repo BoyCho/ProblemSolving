@@ -46,7 +46,6 @@ int main()
 	for (int i = 0; i < 2 * n; i++) {
 		int tmp; cin >> tmp; c.push_back({ tmp, false });
 	}
-
 	while (k > zeros) {
 		cnt++;
 		step1();
