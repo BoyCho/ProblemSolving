@@ -16,10 +16,7 @@ int main()
 
 	int st = 0, en = 0;
 	for (sum = arr[st]; st < n; st++) {
-		while (en < n && sum < s) {
-			en++;
-			if (en != n) sum += arr[en];
-		}
+		while (en < n && sum < s) sum += arr[++en];
 		if (en == n) break;
 		mn = min(mn, en - st + 1);
 		sum -= arr[st];
