@@ -13,10 +13,9 @@ public class Main {
         private final int x, y;
         private int sec;
 
-        public Node(int x, int y, int sec) {
+        public Node(int x, int y) {
             this.x = x;
             this.y = y;
-            this.sec = sec;
         }
 
         @Override
@@ -46,7 +45,7 @@ public class Main {
                 map[i][j] = Integer.parseInt(st.nextToken());
 
                 if (map[i][j] == 9) {
-                    que.add(new Node(j, i, 0));
+                    que.add(new Node(j, i));
                     map[i][j] = 0;
                     vis[i][j] = 1;
                 }
@@ -64,8 +63,7 @@ public class Main {
             if (map[cur.y][cur.x] != 0 && size > map[cur.y][cur.x]) {
 
                 map[cur.y][cur.x] = 0;
-                ans += cur.sec;
-                cur.sec = 0;
+                ans += vis[cur.y][cur.x] - 1;
 
                 if (eat + 1 == size) {
                     size++;
@@ -87,7 +85,7 @@ public class Main {
 
                 vis[ny][nx] = vis[cur.y][cur.x] + 1;
 
-                que.add(new Node(nx, ny, cur.sec + 1));
+                que.add(new Node(nx, ny));
             }
         }
         System.out.println(ans);
