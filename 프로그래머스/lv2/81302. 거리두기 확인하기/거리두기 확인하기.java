@@ -17,24 +17,19 @@ class Solution {
                         int ny = i + dy[k];
 
                         if (nx < 0 || ny < 0 || nx >= 5 || ny >= 5) continue;
-
-                        if (k < 4) {
-                            if (places[n][ny].charAt(nx) == 'P')
+                        if (places[n][ny].charAt(nx) != 'P') continue;
+                        
+                        if (k < 4) flag = true;
+                        
+                        else if (k < 8) {
+                            if (places[n][i+dy[k]].charAt(j) != 'X' || places[n][i].charAt(j+dx[k]) != 'X')
                                 flag = true;
                         }
-                        else if (k < 8) {
-                            if (places[n][ny].charAt(nx) == 'P') {
-                                if (places[n][i+dy[k]].charAt(j) != 'X' || places[n][i].charAt(j+dx[k]) != 'X')
-                                    flag = true;
-                            }
-                        }
                         else {
-                            if (places[n][ny].charAt(nx) == 'P') {
-                                if (dy[k]!=0 && places[n][i+dy[k]/2].charAt(j) != 'X')
-                                    flag = true;
-                                if (dx[k]!=0 && places[n][i].charAt(j+dx[k]/2) != 'X')
-                                    flag = true;
-                            }
+                            if (dy[k]!=0 && places[n][i+dy[k]/2].charAt(j) != 'X')
+                                flag = true;
+                            if (dx[k]!=0 && places[n][i].charAt(j+dx[k]/2) != 'X')
+                                flag = true;
                         }
                         if (flag) break;
                     }
