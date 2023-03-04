@@ -1,31 +1,16 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Main {
 
     public static void main(String[] args) {
         StringBuffer sb = new StringBuffer();
-        int[] d = new int[10001];
-
-        Queue<Integer> queue = new LinkedList<>();
+        boolean[] d = new boolean[10001];
 
         for (int i = 1; i <= 10000; i++) {
-            if (d[i] != 0) continue;
-            
-            queue.add(i);
-            
-            while (!queue.isEmpty()) {
-                int c = creater(queue.poll());
-
-                if (c > 10000 || d[c] != 0) continue;
-
-                d[c] = 1;
-                queue.add(c);
-            }
+            int n = creater(i);
+            if (n > 10000) continue;
+            d[n] = true;
         }
-        for (int i = 1; i <= 10000; i++) 
-            if (d[i] == 0) sb.append(i + "\n");
-
+        for (int i = 1; i <= 10000; i++)
+            if (!d[i]) sb.append(i + "\n");
         System.out.println(sb);
     }
 
