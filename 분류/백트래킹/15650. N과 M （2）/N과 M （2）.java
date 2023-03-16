@@ -29,6 +29,7 @@ public class Main {
             return;
         }
         for (int i = 1; i <= n; i++) {
+            if (k > 0 && arr[k - 1] > i) continue;
             if (isUsed[i]) continue;
             arr[k] = i;
             isUsed[i] = true;

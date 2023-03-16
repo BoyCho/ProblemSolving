@@ -21,6 +21,6 @@ public class Main {
         for (int i = 2; i < n.length(); i++) {
             if (n.charAt(i) - n.charAt(i-1) != p) return;
         }
-        cnt++;
+        cnt++;;
     }
 }
