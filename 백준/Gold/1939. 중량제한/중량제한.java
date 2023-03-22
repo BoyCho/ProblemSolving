@@ -1,110 +1,97 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    /**
-     * 백준 1939 중량제한 (https://www.acmicpc.net/problem/1939)
-     */
-    private static int n,m;
-    private static ArrayList<ArrayList<Island>> list = new ArrayList<>();
-    private static boolean[] visit;
+
+    static class Bridge {
+        int a, b, cost;
+
+        Bridge(int a, int b, int cost) {
+            this.a = a;
+            this.b = b;
+            this.cost = cost;
+        }
+    }
+
+    static Bridge[] bridgeList;
+    static int[] parent, rank;
+    static int n, m, max;
+    static int stFactory, enFactory;
 
     public static void main(String[] args) throws IOException {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        StringTokenizer st = new StringTokenizer(reader.readLine());
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
 
-        int left = 0;
-        int right = 0;
+        max = 0;
 
-        for (int i=0; i<=n; i++) {
-            list.add(new ArrayList<>());
-        }
+        bridgeList = new Bridge[m];
 
-        int max = 0;
+        parent = new int[n + 1];
+        rank = new int[n + 1];
 
-        for (int i=0; i<m; i++) {
-            st = new StringTokenizer(reader.readLine());
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
 
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            list.get(a).add(new Island(b,c));
-            list.get(b).add(new Island(a,c));
-
+            bridgeList[i] = new Bridge(a,b,c);
             max = Math.max(max, c);
         }
 
-        right = max;
+        st = new StringTokenizer(br.readLine());
 
-        st = new StringTokenizer(reader.readLine());
+        stFactory = Integer.parseInt(st.nextToken());
+        enFactory = Integer.parseInt(st.nextToken());
 
-        int start = Integer.parseInt(st.nextToken());
-        int end = Integer.parseInt(st.nextToken());
-
+        //binary-search
+        int left = 0, right = max;
         while (left <= right) {
+            int mid = (left + right) / 2;
 
-            int mid = (left+right)/2;
-            visit = new boolean[n+1];
-
-            if (bfs(start,end,mid)) {
-                left = mid+1;
-            } else {
-                right = mid-1;
-            }
-
-        }//while
-
+            if (check(mid))
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
         System.out.println(right);
-
-
     }
 
-    private static boolean bfs(int start, int end, int mid) {
+    static boolean check(int cost) {
+        for (int i = 1; i <= n; i++)
+            parent[i] = i;
 
-        Queue<Integer> q = new LinkedList<>();
-        q.add(start);
-        visit[start] = true;
+        for (int i = 0; i < m; i++) {
+            if (bridgeList[i].cost >= cost)
+                union(bridgeList[i].a, bridgeList[i].b);
+        }
+        return find(stFactory) == find(enFactory);
+    }
 
-        while (!q.isEmpty()) {
+    static void union(int a, int b) {
+        int x = find(a);
+        int y = find(b);
 
-            int island = q.poll();
+        if (x == y) return;
 
-            if (island == end) {
-                return true;
-            }
-
-            for (Island i : list.get(island)) {
-
-                if (!visit[i.destination] && mid <= i.cost) {
-                    visit[i.destination] = true;
-                    q.add(i.destination);
-                }
-
-            }
-
-        }//while
-
-        return false;
-
-    }//bfs
-
-    static class Island {
-        int destination, cost;
-
-        Island (int destination, int cost) {
-            this.destination = destination;
-            this.cost = cost;
+        if (rank[x] > rank[y])
+            parent[y] = x;
+        if (rank[x] < rank[y])
+            parent[x] = y;
+        if (rank[x] == rank[y]) {
+            parent[y] = x;
+            rank[x]++;
         }
     }
+
+    static int find(int ch) {
+        if (ch == parent[ch])
+            return ch;
+        return parent[ch] = find(parent[ch]);
+    }
+
 }
