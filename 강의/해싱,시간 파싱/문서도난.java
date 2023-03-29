@@ -1,7 +1,25 @@
 import java.util.*;
 class 문서도난 {
     public String[] solution(String[] reports, String times){
-        String[] answer = {};
+        String stTime = times.split(" ")[0];
+        String enTime = times.split(" ")[1];
+
+        List<String> ansTime = new ArrayList<>();
+        HashMap<String, String> timeToName = new HashMap<>();
+
+        for (String r : reports) {
+            String name = r.split(" ")[0];
+            String time = r.split(" ")[1];
+
+            if (time.compareTo(stTime) < 0 || time.compareTo(enTime) > 0) continue;
+            ansTime.add(time);
+            timeToName.put(time, name);
+        }
+        ansTime.sort(String::compareTo);
+
+        String[] answer = new String[ansTime.size()];
+        for (int i = 0; i < answer.length; i++)
+            answer[i] = timeToName.get(ansTime.get(i));
 
         return answer;
     }
