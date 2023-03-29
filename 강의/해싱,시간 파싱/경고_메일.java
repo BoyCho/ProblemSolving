@@ -1,9 +1,39 @@
 import java.util.*;
 class 경고_메일 {
-    public String[] solution(String[] reports, int time){
-        String[] answer = {};
+    public String[] solution(String[] reports, int t){
+        HashMap<String, String> nT = new HashMap<>();
+        HashMap<String, Integer> nTotalT = new HashMap<>();
+        HashSet<String> warning = new HashSet<>();
 
+        for (String s : reports) {
+            String[] report = s.split(" ");
+            String name = report[0];
+            String time = report[1];
+            String state = report[2];
+
+            if (state.equals("in"))
+                nT.put(name, time);
+            else {
+                int outTime = getTime(time);
+                int inTime = getTime(nT.get(name));
+                nTotalT.put(name, nTotalT.getOrDefault(name, 0) + outTime - inTime);
+
+                if (nTotalT.get(name) > t) warning.add(name);
+            }
+        }
+        List<String> ans = new ArrayList<>(warning);
+        ans.sort(String::compareTo);
+
+        String[] answer = new String[ans.size()];
+        for (int i = 0; i < ans.size(); i++)
+            answer[i] = ans.get(i);
         return answer;
+    }
+
+    int getTime(String time) {
+        int h = Integer.parseInt(time.split(":")[0]);
+        int m = Integer.parseInt(time.split(":")[1]);
+        return h * 60 + m;
     }
 
     public static void main(String[] args){
