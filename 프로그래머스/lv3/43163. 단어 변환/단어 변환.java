@@ -2,28 +2,22 @@ import java.util.*;
 
 class Solution {
     public int solution(String begin, String target, String[] words) {
-        Queue<String> Q = new LinkedList<>();
         boolean[] vis = new boolean[words.length];
+        Queue<String> Q = new LinkedList<>();
         
-        for (int i = 0; i < words.length; i++) {
-            if (getDiff(begin, words[i]) == 1) {
-                if (words[i].equals(target)) return 1;
-                vis[i] = true;
-                Q.add(words[i]);
-            }
-        }
+        Q.add(begin);
         
-        int L = 1;
+        int L = 0;
         while (!Q.isEmpty()) {
-            L++;
             int len = Q.size();
+            L++;
             while (len-- > 0) {
                 String cur = Q.poll();
 
                 for (int i = 0; i < words.length; i++) {
                     if (vis[i]) continue;
                     
-                    if (getDiff(cur, words[i]) == 1) {
+                    if (check(cur, words[i])) {
                         if (words[i].equals(target)) return L;
                         vis[i] = true;
                         Q.add(words[i]);
@@ -34,12 +28,13 @@ class Solution {
         return 0;
     }
     
-    int getDiff(String beg, String wor) {
+    boolean check(String beg, String wor) {
+        int cnt = 0;
         for (int i = 0; i < wor.length(); i++) {
-            String s = Character.toString(wor.charAt(i));
-            if (beg.contains(s))
-                beg = beg.replaceFirst(s, "");
+            if (beg.charAt(i) != wor.charAt(i)) {
+                if (++cnt > 1) return false;
+            }
         }
-        return beg.length();
+        return true;
     }
 }
