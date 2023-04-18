@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.io.*;
 
 public class Main {
 
@@ -17,12 +14,14 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
         trees = new int[n];
 
+        int max = 0;
         st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             trees[i] = Integer.parseInt(st.nextToken());
-        Arrays.sort(trees);
+            max = Math.max(max, trees[i]);
+        }
 
-        int l = 0, r = trees[n-1] + 1;
+        int l = 0, r = max + 1;
         while (l < r) {
             int mid = (l + r) / 2;
 
