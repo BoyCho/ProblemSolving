@@ -5,5 +5,5 @@ WHERE HOST_ID IN (
     SELECT HOST_ID
     FROM PLACES 
     GROUP BY HOST_ID
-    HAVING count(HOST_ID) > 1 )
+    HAVING count(*) > 1 )
 ORDER BY P.ID
