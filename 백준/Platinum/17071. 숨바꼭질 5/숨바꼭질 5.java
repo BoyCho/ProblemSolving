@@ -11,24 +11,13 @@ public class Main {
         int N = Integer.parseInt(stk.nextToken());
         int K = Integer.parseInt(stk.nextToken());
 
-        if (N == K) {
+        if (N == K)
             System.out.println(0);
-            return;
-        }
+        else
+            System.out.println(bfs(N, K));
+    }
 
-        Map<Integer, Integer> time = new HashMap<>();
-        int maxSec = 0;
-        while (K <= 500000) {
-            time.put(K, maxSec++);
-            K += maxSec;
-        }
-
-        // 예시: 11 1
-        int ans = maxSec;
-        int t = time.getOrDefault(N, -1);
-        if (t >= 0 && t % 2 == 0)
-            ans = Math.min(ans, t);
-
+    static int bfs(int N, int K) {
         int[][] vis = new int[500001][2];
         vis[N][0] = 1;
 
@@ -36,25 +25,23 @@ public class Main {
         Q.add(N);
 
         int sec = 0;
-        while (!Q.isEmpty() && sec < maxSec) {
+        while (!Q.isEmpty()) {
             int len = Q.size();
-            sec++;
+            K += ++sec;
+            if (K > 500000) return -1;
+
             while (len-- > 0) {
                 int cur = Q.poll();
 
-                for (int next: new int[]{cur + 1, cur - 1, cur * 2}) {
+                for (int next: new int[]{cur - 1, cur + 1, cur * 2}) {
                     if (next < 0 || next > 500000 || vis[next][sec % 2] == 1) continue;
-
-                    t = time.getOrDefault(next, -1);
-                    if (t >= sec && (t - sec) % 2 == 0)
-                        ans = Math.min(ans, t);
 
                     vis[next][sec % 2] = 1;
                     Q.add(next);
                 }
+                if (vis[K][sec % 2] == 1) return sec;
             }
         }
-        ans = (ans == maxSec) ? -1 : ans;
-        System.out.println(ans);
+        return -1;
     }
 }
