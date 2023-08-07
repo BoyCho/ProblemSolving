@@ -8,20 +8,21 @@ public class Main {
 	
 		int N = Integer.parseInt(stk.nextToken());
 		int K = Integer.parseInt(stk.nextToken());
-		Queue<Integer> Q = new LinkedList<>();
+		List<Integer> L = new LinkedList<>();
 		
 		for (int i = 1; i <= N; i++)
-			Q.offer(i);
+			L.add(i);
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("<");
 		
-		while(!Q.isEmpty()) {
-			int cnt = K - 1;
-			while(cnt-- > 0) {
-				Q.offer(Q.poll());
-			}
-			sb.append(Q.poll()).append(", ");
+		int cur = K - 1;
+		while(true) {
+			sb.append(L.remove(cur)).append(", ");
+			
+			if (L.isEmpty()) break;
+			
+			cur = (cur + K - 1) % L.size();
 		}
 		
 		sb.delete(sb.length() - 2, sb.length());
