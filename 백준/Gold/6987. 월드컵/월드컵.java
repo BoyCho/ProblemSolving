@@ -13,23 +13,29 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException {
 		for (int i = 0; i < 4; i++) {
-			init();
-			result = 0;
 			
-			BT(0, 1);
+			result = 0;
+			if (init()) BT(0, 1);
 			
 			sb.append(result).append(" ");
 		}
 		System.out.println(sb);
 	}
 	
-	public static void init() throws IOException {
+	public static boolean init() throws IOException {
 		stk = new StringTokenizer(br.readLine());
+		
+		int win = 0, draw = 0, lose = 0;
 		
 		for (int j = 0; j < 6; j++) {
 			for (int k = 0; k < 3; k++)
 				team[j][k] = Integer.parseInt(stk.nextToken());
+			win += team[j][0];
+			draw += team[j][1];
+			lose += team[j][2];
 		}
+		if (win != lose || win + draw + lose != 30) return false;
+		return true;
 	}
 	
 	public static void BT(int a, int b_) {
