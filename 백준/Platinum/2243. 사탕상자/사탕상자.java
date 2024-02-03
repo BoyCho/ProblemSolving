@@ -1,52 +1,58 @@
+import java.util.*;
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer stk;
 
-	static final int SIZE = 1_000_001;
-	static int[] tree;
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		tree = new int[SIZE*4];
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		for(int i=0; i<n; i++) {
-			st = new StringTokenizer(br.readLine());
-			int op = Integer.parseInt(st.nextToken());
-			int a = Integer.parseInt(st.nextToken());
-			if(op == 1) {
-				int candy = query(1, SIZE, 1, a);
-				sb.append(candy+"\n");
-			}else {
-				int b = Integer.parseInt(st.nextToken());	
-				update(1, SIZE, 1, a, b);
-			}
-		}
-		System.out.println(sb.toString());
-	}
-	static int query(int s, int e, int idx, int target) {
-		if(s == e) {
-			update(1, SIZE, 1, s, -1);
-			return s;
-		}
-		
-		int mid = (s+e)/2;
-		if(target <= tree[idx*2]) {
-			return query(s, mid, idx*2, target);
-		}else {
-			return query(mid+1, e, idx*2+1, target-tree[idx*2]);
-		}
-	}
-	
-	static void update(int s, int e, int idx, int target, int dif) {
-		if(target < s || e < target) return;
-		
-		tree[idx] += dif;
-		if(s == e) return;
-		
-		int mid = (s+e)/2;
-		update(s, mid, idx*2, target, dif);
-		update(mid+1, e, idx*2+1, target, dif);
-	}
+    static int N, stIdx = 1;
+    static long[] tree;
+
+    public static void main(String[] args) throws IOException {
+        N = Integer.parseInt(br.readLine());
+
+        for (int i = 0; stIdx < 1000000; i++) {
+            stIdx = (int) Math.pow(2, i);
+        }
+
+        tree = new long[2 * stIdx];
+
+        for (int n = 0; n < N; n++) {
+            stk = new StringTokenizer(br.readLine());
+            int A = Integer.parseInt(stk.nextToken());
+
+            if (A == 1) {
+                long B = Long.parseLong(stk.nextToken());
+                sb.append(pick(B)).append("\n");
+            } else {
+                int B = Integer.parseInt(stk.nextToken());
+                long C = Long.parseLong(stk.nextToken());
+                update(B + stIdx, C);
+            }
+        }
+        System.out.println(sb);
+    }
+
+    static void update(int b, long c) {
+        while (b >= 1) {
+            tree[b] += c;
+            b /= 2;
+        }
+    }
+
+    static int pick(long b) {
+        int cur = 1;
+        while (cur < stIdx) {
+            tree[cur]--;
+            if (b <= tree[cur * 2]) {
+                cur *= 2;
+            } else {
+                b -= tree[cur * 2];
+                cur = 2 * cur + 1;
+            }
+        }
+        tree[cur]--;
+        return cur - stIdx;
+    }
 }
