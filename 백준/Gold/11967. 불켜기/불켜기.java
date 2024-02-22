@@ -38,28 +38,35 @@ class Main {
         map = new int[N + 1][N + 1];
         map[1][1] = 1;
 
-        while (lightBFS()) {}
-
-        System.out.println(cnt);
-    }
-
-    static boolean lightBFS() {
-        Queue<int[]> Q = new ArrayDeque<>();
-        Q.offer(new int[]{1, 1});
-
         vis = new boolean[N + 1][N + 1];
         vis[1][1] = true;
 
-        boolean switchOn = false;
+        lightBFS(1, 1);
+        System.out.println(cnt);
+    }
+
+    static void lightBFS(int x, int y) {
+        Queue<int[]> Q = new ArrayDeque<>();
+        Q.offer(new int[]{x, y});
 
         while (!Q.isEmpty()) {
             int[] cur = Q.poll();
 
             for (int[] light : switches[cur[0]][cur[1]]) {
-                if (map[light[0]][light[1]] == 0) {
-                    map[light[0]][light[1]] = 1;
-                    switchOn = true;
-                    cnt++;
+                if (map[light[0]][light[1]] == 1) continue;
+
+                map[light[0]][light[1]] = 1;
+                cnt++;
+                for (int dir = 0; dir < 4; dir++) {
+                    int nx = light[0] + dx[dir];
+                    int ny = light[1] + dy[dir];
+
+                    if (nx < 1 || ny < 1 || nx > N || ny > N) continue;
+                    if (vis[nx][ny]) {
+                        Q.offer(new int[]{light[0], light[1]});
+                        vis[light[0]][light[1]] = true;
+                        break;
+                    }
                 }
             }
 
@@ -74,6 +81,5 @@ class Main {
                 vis[nx][ny] = true;
             }
         }
-        return switchOn;
     }
 }
