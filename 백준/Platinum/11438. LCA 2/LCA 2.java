@@ -6,14 +6,13 @@ class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer stk;
 
-    static int N, M, H;
-    static int[] depth;
-    static int[][] dp;
+    static List<Integer> trip = new ArrayList<>();
     static List<Integer>[] tree;
+    static int[] depth, idxInTrip, seg;
+    static int N, M, stIdx = 1;
 
     public static void main(String[] args) throws IOException {
         N = Integer.parseInt(br.readLine());
-        H = (int)(Math.log(N) / Math.log(2)) + 1;
 
         tree = new ArrayList[N + 1];
         for (int i = 1; i <= N; i++) {
@@ -22,64 +21,72 @@ class Main {
 
         for (int i = 1; i < N; i++) {
             stk = new StringTokenizer(br.readLine());
-            int a =  Integer.parseInt(stk.nextToken());
+            int a = Integer.parseInt(stk.nextToken());
             int b = Integer.parseInt(stk.nextToken());
             tree[a].add(b);
             tree[b].add(a);
         }
 
+        idxInTrip = new int[N + 1];
+        Arrays.fill(idxInTrip, -1);
         depth = new int[N + 1];
-        dp = new int[N + 1][H + 1];
-        init(1, 1, 0);
 
-        for (int i = 1; i <= H; i++) {
-            for (int j = 1; j <= N; j++) {
-                dp[j][i] = dp[dp[j][i - 1]][i - 1];
+        DFSInit(1, 1, 0);
+
+        while (stIdx < trip.size()) {
+            stIdx *= 2;
+        }
+        seg = new int[2 * stIdx];
+        for (int i = stIdx; i < stIdx + trip.size(); i++) {
+            seg[i] = trip.get(i - stIdx);
+        }
+
+        depth[0] = Integer.MAX_VALUE;
+        for (int i = stIdx - 1; i > 0; i--) {
+            if (depth[seg[2 * i]] < depth[seg[2 * i + 1]]) {
+                seg[i] = seg[2 * i];
+            } else {
+                seg[i] = seg[2 * i + 1];
             }
         }
 
         M = Integer.parseInt(br.readLine());
         for (int i = 0; i < M; i++) {
             stk = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(stk.nextToken());
-            int b = Integer.parseInt(stk.nextToken());
-            sb.append(LCA(a, b)).append("\n");
-        }
+            int l = Integer.parseInt(stk.nextToken());
+            int r = Integer.parseInt(stk.nextToken());
 
+            l = idxInTrip[l] + stIdx;
+            r = idxInTrip[r] + stIdx;
+
+            if (l > r) {
+                int tmp = l;
+                l = r;
+                r = tmp;
+            }
+
+            int LCA = seg[l];
+            while (l <= r) {
+                if (depth[seg[l]] < depth[LCA]) LCA = seg[l];
+                if (depth[seg[r]] < depth[LCA]) LCA = seg[r];
+                l = (l + 1) / 2;
+                r = (r - 1) / 2;
+            }
+            sb.append(LCA).append("\n");
+        }
         System.out.print(sb);
     }
 
-    static void init(int h, int cur, int parent) {
+    static void DFSInit(int h, int cur, int parent) {
         depth[cur] = h;
+        if (idxInTrip[cur] == -1) {
+            idxInTrip[cur] = trip.size();
+        }
+        trip.add(cur);
         for (int next : tree[cur]) {
             if (next == parent) continue;
-            dp[next][0] = cur;
-            init(h + 1, next, cur);
+            DFSInit(h + 1, next, cur);
+            trip.add(cur);
         }
-    }
-
-    static int LCA(int a, int b) {
-        if (depth[b] > depth[a]) {
-            int tmp = a;
-            a = b;
-            b = tmp;
-        }
-
-        while (depth[a] > depth[b]) {
-            for (int i = H; i >= 0; i--) {
-                if (Math.pow(2, i) <= depth[a] - depth[b]) {
-                    a = dp[a][i];
-                }
-            }
-        }
-        if (a == b) return a;
-
-        for (int i = H; i >= 0; i--) {
-            if (dp[a][i] != dp[b][i])  {
-                a = dp[a][i];
-                b = dp[b][i];
-            }
-        }
-        return dp[a][0];
     }
 }
